@@ -97,11 +97,18 @@ def block(xindex , yindex):
     sur.fill("white")
     sur_rect = sur.get_rect(topleft = (x , y))
     block_lst.append([sur , sur_rect])
-    
-    boundary_lst.append(Boundary(x , y , x + X_UNIT , y))
-    boundary_lst.append(Boundary(x + X_UNIT , y , x + X_UNIT , y + Y_UNIT))
-    boundary_lst.append(Boundary(x + X_UNIT , y + Y_UNIT , x , y + Y_UNIT))
-    boundary_lst.append(Boundary(x , y , x , y + Y_UNIT))
+    if yindex != 0:
+        if MAP[yindex - 1][xindex] != 1:
+            boundary_lst.append(Boundary(x , y , x + X_UNIT , y))
+    if xindex != len(MAP[0]) - 1 :
+        if MAP[yindex][xindex + 1] != 1:
+            boundary_lst.append(Boundary(x + X_UNIT , y , x + X_UNIT , y + Y_UNIT))
+    if yindex != len(MAP) - 1:
+        if MAP[yindex + 1][xindex] != 1:
+            boundary_lst.append(Boundary(x + X_UNIT , y + Y_UNIT , x , y + Y_UNIT))
+    if xindex != 0:
+        if MAP[yindex][xindex - 1] != 1:
+            boundary_lst.append(Boundary(x , y , x , y + Y_UNIT))
 
 for yindex , row in enumerate(MAP):
     for xindex , column in enumerate(row):
