@@ -3,7 +3,7 @@ from sys import exit
 import random
 import math
 
-WIDTH , HEIGHT = 1300 , 700
+WIDTH , HEIGHT = 600 , 600
 
 boundary_lst = []
 
@@ -17,8 +17,8 @@ MAP = [
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 1 , 1 , 1 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0],
+        [0 , 0 , 1 , 1 , 1 , 1 , 1 , 0 , 0],
+        [0 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0]
                                             ]
 
@@ -93,6 +93,11 @@ def block(xindex , yindex):
     x = X_UNIT * xindex
     y = Y_UNIT * yindex
     
+    sur = pygame.Surface( (X_UNIT , Y_UNIT) )
+    sur.fill("white")
+    sur_rect = sur.get_rect(topleft = (x , y))
+    block_lst.append([sur , sur_rect])
+    
     boundary_lst.append(Boundary(x , y , x + X_UNIT , y))
     boundary_lst.append(Boundary(x + X_UNIT , y , x + X_UNIT , y + Y_UNIT))
     boundary_lst.append(Boundary(x + X_UNIT , y + Y_UNIT , x , y + Y_UNIT))
@@ -103,8 +108,6 @@ for yindex , row in enumerate(MAP):
         if column == 1:
             block(xindex , yindex)
 
-# for _ in range(5):
-#     boundary_lst.append(Boundary(random.randint(0 , WIDTH) , random.randint(0 , HEIGHT) , random.randint(0 , WIDTH) , random.randint(0 , HEIGHT)))
 boundary_lst.append(Boundary(0 , 0 , 0 , HEIGHT))
 boundary_lst.append(Boundary(0 , 0 , WIDTH , 0))
 boundary_lst.append(Boundary(WIDTH , 0 , WIDTH , HEIGHT))
@@ -113,6 +116,8 @@ def draw():
     pos = pygame.mouse.get_pos()
     for b in boundary_lst:
         b.draw()
+    for block in block_lst:
+        screen.blit(block[0] , block[1])
     for particle in particle_lst:
         particle.show(pos)
 
