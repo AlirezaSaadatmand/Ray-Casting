@@ -3,7 +3,7 @@ from sys import exit
 import random
 import math
 
-WIDTH , HEIGHT = 1200 , 600
+WIDTH , HEIGHT = 1300 , 700
 
 boundary_lst = []
 
@@ -15,11 +15,11 @@ class Particle:
         self.x = x
         self.y = y
         self.ray_lst = []
-        for i in range(0 , 360 , 10):
+        for i in range(0 , 360 , 1):
             self.ray_lst.append(Ray(WIDTH/ 2 , HEIGHT/2 , math.cos(math.radians(i)) , math.sin(math.radians(i))))
-    def update(self , pos):
+            
+    def show(self , pos):
         self.x , self.y = pos
-    def show(self):
         pygame.draw.circle(screen, "white" , (self.x , self.y), 10)
         
         for ray in self.ray_lst:
@@ -27,9 +27,9 @@ class Particle:
             ray.update(self.x , self.y)
             pts = ray.cast()
             if pts:
+
                 for pt in pts:
-                    dis.append(math.atan2(pt[1] - self.y , pt[0] - self.x))
-            if dis:
+                    dis.append(math.sqrt((self.y - pt[1])**2 + (self.x - pt[0])**2))
                 pygame.draw.line(surface , (255 , 255 , 255 , 150) , (self.x , self.y) , pts[dis.index(min(dis))])
 
 class Ray:
@@ -75,15 +75,17 @@ class Boundary:
         pygame.draw.line(screen , "white" , self.a , self.b)
         
 for _ in range(5):
-    boundary_lst.append(Boundary(random.randint(0 , WIDTH) , random.randint(0 , WIDTH) , random.randint(0 , HEIGHT) , random.randint(0 , HEIGHT)))
-        
+    boundary_lst.append(Boundary(random.randint(0 , WIDTH) , random.randint(0 , HEIGHT) , random.randint(0 , WIDTH) , random.randint(0 , HEIGHT)))
+boundary_lst.append(Boundary(0 , 0 , 0 , HEIGHT))
+boundary_lst.append(Boundary(0 , 0 , WIDTH , 0))
+boundary_lst.append(Boundary(WIDTH , 0 , WIDTH , HEIGHT))
+boundary_lst.append(Boundary(0 , HEIGHT , WIDTH , HEIGHT))
 def draw():
     pos = pygame.mouse.get_pos()
     for b in boundary_lst:
         b.draw()
     for particle in particle_lst:
-        particle.update(pos)
-        particle.show()
+        particle.show(pos)
 
 pygame.init()
 screen = pygame.display.set_mode( (WIDTH , HEIGHT)) 
