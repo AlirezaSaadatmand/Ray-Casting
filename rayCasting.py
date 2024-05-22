@@ -9,13 +9,28 @@ boundary_lst = []
 
 particle_lst = []
 
+block_lst = []
+
+MAP = [
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 1 , 1 , 1 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0]
+                                            ]
+
+X_UNIT = WIDTH / (len(MAP[0]))
+Y_UNIT = HEIGHT / (len(MAP))
 
 class Particle:
     def __init__(self , x , y):
         self.x = x
         self.y = y
         self.ray_lst = []
-        for i in range(0 , 360 , 1):
+        for i in range(0 , 360 , 10):
             self.ray_lst.append(Ray(WIDTH/ 2 , HEIGHT/2 , math.cos(math.radians(i)) , math.sin(math.radians(i))))
             
     def show(self , pos):
@@ -73,9 +88,23 @@ class Boundary:
     
     def draw(self):
         pygame.draw.line(screen , "white" , self.a , self.b)
-        
-for _ in range(5):
-    boundary_lst.append(Boundary(random.randint(0 , WIDTH) , random.randint(0 , HEIGHT) , random.randint(0 , WIDTH) , random.randint(0 , HEIGHT)))
+
+def block(xindex , yindex):
+    x = X_UNIT * xindex
+    y = Y_UNIT * yindex
+    
+    boundary_lst.append(Boundary(x , y , x + X_UNIT , y))
+    boundary_lst.append(Boundary(x + X_UNIT , y , x + X_UNIT , y + Y_UNIT))
+    boundary_lst.append(Boundary(x + X_UNIT , y + Y_UNIT , x , y + Y_UNIT))
+    boundary_lst.append(Boundary(x , y , x , y + Y_UNIT))
+
+for yindex , row in enumerate(MAP):
+    for xindex , column in enumerate(row):
+        if column == 1:
+            block(xindex , yindex)
+
+# for _ in range(5):
+#     boundary_lst.append(Boundary(random.randint(0 , WIDTH) , random.randint(0 , HEIGHT) , random.randint(0 , WIDTH) , random.randint(0 , HEIGHT)))
 boundary_lst.append(Boundary(0 , 0 , 0 , HEIGHT))
 boundary_lst.append(Boundary(0 , 0 , WIDTH , 0))
 boundary_lst.append(Boundary(WIDTH , 0 , WIDTH , HEIGHT))
