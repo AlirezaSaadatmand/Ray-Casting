@@ -1,0 +1,1 @@
+This is a ray casting project using Python / pygame

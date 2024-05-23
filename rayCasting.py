@@ -14,9 +14,9 @@ block_lst = []
 MAP = [
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 1 , 1 , 1 , 0 , 0 , 0],
+        [0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 1 , 1 , 1 , 1 , 1 , 0 , 0],
         [0 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0]
@@ -30,7 +30,7 @@ class Particle:
         self.x = x
         self.y = y
         self.ray_lst = []
-        for i in range(0 , 360 , 10):
+        for i in range(0 , 360 , 1):
             self.ray_lst.append(Ray(WIDTH/ 2 , HEIGHT/2 , math.cos(math.radians(i)) , math.sin(math.radians(i))))
             
     def show(self , pos):
@@ -119,6 +119,7 @@ boundary_lst.append(Boundary(0 , 0 , 0 , HEIGHT))
 boundary_lst.append(Boundary(0 , 0 , WIDTH , 0))
 boundary_lst.append(Boundary(WIDTH , 0 , WIDTH , HEIGHT))
 boundary_lst.append(Boundary(0 , HEIGHT , WIDTH , HEIGHT))
+
 def draw():
     pos = pygame.mouse.get_pos()
     for b in boundary_lst:
