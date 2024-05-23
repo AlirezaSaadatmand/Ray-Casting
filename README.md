@@ -1,6 +1,6 @@
 This is a ray casting project using Python / pygame
 
-
+The character moves with the mouse cursor .
 
 You can change the map the way you want using MAP list in the code .
 
@@ -14,4 +14,4 @@ Hear is demo :
 
 
 
-I will try to make a 3D version of it as well
+I will try to make a 3D version of it as well .
