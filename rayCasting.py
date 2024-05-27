@@ -3,7 +3,9 @@ from sys import exit
 import random
 import math
 
-WIDTH , HEIGHT = 600 , 600
+WIDTH , HEIGHT = 700 , 700
+
+PIXEL_UNIT = 2
 
 boundary_lst = []
 
@@ -14,12 +16,12 @@ block_lst = []
 MAP = [
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 1 , 1 , 1 , 0 , 0 , 0],
-        [0 , 0 , 0 , 1 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 1 , 1 , 1 , 1 , 1 , 0 , 0],
-        [0 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0]
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
                                             ]
 
 X_UNIT = WIDTH / (len(MAP[0]))
@@ -29,15 +31,52 @@ class Particle:
     def __init__(self , x , y):
         self.x = x
         self.y = y
+        self.main_ray_lstt = []
         self.ray_lst = []
+        
+        self.goingup = False
+        self.goingdown = False
+        self.goingright = False
+        self.goingleft = False
+        
         for i in range(0 , 360 , 1):
+            if i < 70:
+                self.main_ray_lstt.append(Ray(WIDTH/ 2 , HEIGHT/2 , math.cos(math.radians(i)) , math.sin(math.radians(i))))
             self.ray_lst.append(Ray(WIDTH/ 2 , HEIGHT/2 , math.cos(math.radians(i)) , math.sin(math.radians(i))))
-            
-    def show(self , pos):
-        self.x , self.y = pos
+    
+    def update_pos(self):
+        count = 0
+        for i in [self.goingup , self.goingdown , self.goingright , self.goingleft]:
+            if i == True:
+                count += 1
+        if count == 2:
+            if self.goingup and self.goingright:
+                self.x += PIXEL_UNIT
+                self.y -= PIXEL_UNIT
+            if self.goingup and self.goingleft:
+                self.x -= PIXEL_UNIT
+                self.y -= PIXEL_UNIT
+            if self.goingdown and self.goingright:
+                self.x += PIXEL_UNIT
+                self.y += PIXEL_UNIT
+            if self.goingdown and self.goingleft:
+                self.x -= PIXEL_UNIT
+                self.y += PIXEL_UNIT
+        if count == 1:
+            if self.goingup:
+                self.y -= (2*(PIXEL_UNIT**2))**0.5
+            if self.goingdown:
+                self.y += (2*(PIXEL_UNIT**2))**0.5
+            if self.goingright:
+                self.x += (2*(PIXEL_UNIT**2))**0.5
+            if self.goingleft:
+                self.x -= (2*(PIXEL_UNIT**2))**0.5
+                
+    def show(self):
+
         pygame.draw.circle(screen, "white" , (self.x , self.y), 10)
         
-        for ray in self.ray_lst:
+        for ray in self.main_ray_lstt:
             dis = []
             ray.update(self.x , self.y)
             pts = ray.cast()
@@ -121,13 +160,12 @@ boundary_lst.append(Boundary(WIDTH , 0 , WIDTH , HEIGHT))
 boundary_lst.append(Boundary(0 , HEIGHT , WIDTH , HEIGHT))
 
 def draw():
-    pos = pygame.mouse.get_pos()
     for b in boundary_lst:
         b.draw()
     for block in block_lst:
         screen.blit(block[0] , block[1])
-    for particle in particle_lst:
-        particle.show(pos)
+    PLAYER.update_pos()
+    PLAYER.show()
 
 pygame.init()
 screen = pygame.display.set_mode( (WIDTH , HEIGHT)) 
@@ -145,8 +183,28 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                PLAYER.goingup = True
+            if event.key == pygame.K_s :
+                PLAYER.goingdown = True
+            if event.key == pygame.K_d :
+                PLAYER.goingright = True
+            if event.key == pygame.K_a :
+                PLAYER.goingleft = True
+                          
+        if event.type  == pygame.KEYUP:
+            if event.key == pygame.K_w:
+                PLAYER.goingup = False
+            if event.key == pygame.K_s:
+                PLAYER.goingdown = False
+            if event.key == pygame.K_d:
+                PLAYER.goingright = False
+            if event.key == pygame.K_a:
+                PLAYER.goingleft = False
     if not particle_lst:
-        particle_lst.append(Particle(*pos))
+        particle_lst.append(1)
+        PLAYER = Particle(WIDTH/2 , HEIGHT/2)
     draw()
     pygame.display.update()
     clock.tick(60)
