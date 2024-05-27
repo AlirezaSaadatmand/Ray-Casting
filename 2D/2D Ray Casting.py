@@ -5,7 +5,7 @@ import math
 
 WIDTH , HEIGHT = 700 , 700
 
-PIXEL_UNIT = 2
+PIXEL_UNIT = 3
 
 boundary_lst = []
 
@@ -16,11 +16,11 @@ block_lst = []
 MAP = [
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 1 , 0 , 1 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 0 , 1 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
                                             ]
 
@@ -40,7 +40,7 @@ class Particle:
         self.goingleft = False
         
         for i in range(0 , 360 , 1):
-            if i < 70:
+            if i < 360:
                 self.main_ray_lstt.append(Ray(WIDTH/ 2 , HEIGHT/2 , math.cos(math.radians(i)) , math.sin(math.radians(i))))
             self.ray_lst.append(Ray(WIDTH/ 2 , HEIGHT/2 , math.cos(math.radians(i)) , math.sin(math.radians(i))))
     
