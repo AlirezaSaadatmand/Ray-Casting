@@ -10,7 +10,7 @@ WIDTH , HEIGHT = 500 , 500
 
 PIXEL_UNIT = 1
 
-FIELD_OF_VIEW = 120
+FIELD_OF_VIEW = 140
 
 boundary_lst = []
 
@@ -130,14 +130,14 @@ class Particle:
                 for pt in pts:
                     dis.append(math.sqrt((self.y - pt[1])**2 + (self.x - pt[0])**2))
                     
-                unit = WIDTH / FIELD_OF_VIEW
+                unit = WIDTH // FIELD_OF_VIEW
                 sur = pygame.Surface( (unit , HEIGHT / min(dis) * 20) )
                 if min(dis) < 235:
                     code = 255 - min(dis)
                 else:
                     code = 20
                 sur.fill((code , code , code))
-                sur_rect = sur.get_rect(center = (WIDTH + self.main_ray_lst.index(ray) * unit + unit /2  , mainHeight // 2))
+                sur_rect = sur.get_rect(center = (WIDTH + self.main_ray_lst.index(ray) * unit + unit / 2  , mainHeight // 2))
                 surface.blit(sur , sur_rect)
                 pygame.draw.line(surface , (255 , 255 , 255 , 150) , (self.x , self.y) , pts[dis.index(min(dis))])
 
