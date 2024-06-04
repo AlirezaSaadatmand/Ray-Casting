@@ -4,7 +4,7 @@ import random
 import math
 import time
 
-mainWidth , mainHeight = 1000 , 700
+mainWidth , mainHeight = 1200 , 700
 
 WIDTH , HEIGHT = 500 , 500
 
@@ -23,9 +23,9 @@ MAP = [
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
         [0 , 0 , 0 , 0 , 1 , 0 , 1 , 0 , 0],
-        [0 , 0 , 0 , 0 , 1 , 0 , 1 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 1 , 1 , 0 , 0],
+        [0 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 0],
+        [0 , 0 , 1 , 0 , 0 , 0 , 1 , 0 , 0],
+        [0 , 0 , 1 , 0 , 1 , 1 , 1 , 0 , 0],
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
                                             ]
 
@@ -39,8 +39,8 @@ class Particle:
         self.main_ray_lst = []
         self.ray_lst = []
         
-        self.goingUp = False
-        self.goingDown = False
+        self.goingForward = False
+        self.goingBackward = False
         self.goingRight = False
         self.goingLeft = False
         
@@ -78,7 +78,6 @@ class Particle:
         if end > self.fullAngle * self.mutipule:
             end = end - self.fullAngle * self.mutipule
 
-
         count2 = start
         c = 0
         while c < FIELD_OF_VIEW:
@@ -90,37 +89,44 @@ class Particle:
             c += 1
 
 # ======================================= Movement ==================================
+        
         count = 0
-        for i in [self.goingUp , self.goingDown , self.goingRight , self.goingLeft]:
+        for i in [self.goingForward , self.goingBackward , self.goingRight , self.goingLeft]:
             if i == True:
                 count += 1
         if count == 2:
-            if self.goingUp and self.goingRight:
-                self.x += PIXEL_UNIT
-                self.y -= PIXEL_UNIT
-            if self.goingUp and self.goingLeft:
-                self.x -= PIXEL_UNIT
-                self.y -= PIXEL_UNIT
-            if self.goingDown and self.goingRight:
-                self.x += PIXEL_UNIT
-                self.y += PIXEL_UNIT
-            if self.goingDown and self.goingLeft:
-                self.x -= PIXEL_UNIT
-                self.y += PIXEL_UNIT
+            if self.goingForward and self.goingRight:
+                self.y += math.sin(math.radians(self.startView//2 + 45)) * PIXEL_UNIT
+                self.x += math.cos(math.radians(self.startView//2 + 45)) * PIXEL_UNIT
+            if self.goingForward and self.goingLeft:
+                self.y += math.sin(math.radians(self.startView//2 - 45)) * PIXEL_UNIT
+                self.x += math.cos(math.radians(self.startView//2 - 45)) * PIXEL_UNIT
+            if self.goingBackward and self.goingRight:
+                self.y -= math.sin(math.radians(self.startView//2 - 45)) * PIXEL_UNIT
+                self.x -= math.cos(math.radians(self.startView//2 - 45)) * PIXEL_UNIT
+            if self.goingBackward and self.goingLeft:
+                self.y -= math.sin(math.radians(self.startView//2 + 45)) * PIXEL_UNIT
+                self.x -= math.cos(math.radians(self.startView//2 + 45)) * PIXEL_UNIT
+
         if count == 1:
-            if self.goingUp:
-                self.y -= (2*(PIXEL_UNIT**2))**0.5
-            if self.goingDown:
-                self.y += (2*(PIXEL_UNIT**2))**0.5
+            
+            if self.goingForward:
+                self.y += math.sin(math.radians(self.startView//2)) * PIXEL_UNIT
+                self.x += math.cos(math.radians(self.startView//2)) * PIXEL_UNIT
+            if self.goingBackward:
+                self.y -= math.sin(math.radians(self.startView//2)) * PIXEL_UNIT
+                self.x -= math.cos(math.radians(self.startView//2)) * PIXEL_UNIT
             if self.goingRight:
-                self.x += (2*(PIXEL_UNIT**2))**0.5
+                self.y += math.sin(math.radians(self.startView//2 + 90)) * PIXEL_UNIT
+                self.x += math.cos(math.radians(self.startView//2 + 90)) * PIXEL_UNIT
             if self.goingLeft:
-                self.x -= (2*(PIXEL_UNIT**2))**0.5
+                self.y += math.sin(math.radians(self.startView//2 - 90)) * PIXEL_UNIT
+                self.x += math.cos(math.radians(self.startView//2 - 90)) * PIXEL_UNIT
                 
     def show(self):
 
-        pygame.draw.circle(screen, "white" , (self.x , self.y), 10)
-        
+        pygame.draw.circle(screen, "white" , (self.x , self.y), 7)
+
         for ray in self.main_ray_lst:
             dis = []
             ray.update(self.x , self.y)
@@ -130,17 +136,19 @@ class Particle:
                 for pt in pts:
                     dis.append(math.sqrt((self.y - pt[1])**2 + (self.x - pt[0])**2))
                     
-                unit = WIDTH // FIELD_OF_VIEW
+                unit = 700 // FIELD_OF_VIEW 
                 sur = pygame.Surface( (unit , HEIGHT / min(dis) * 20) )
-                if min(dis) < 235:
+                if min(dis) < 240:
                     code = 255 - min(dis)
                 else:
-                    code = 20
+                    code = 15
                 sur.fill((code , code , code))
                 sur_rect = sur.get_rect(center = (WIDTH + self.main_ray_lst.index(ray) * unit + unit / 2  , mainHeight // 2))
                 surface.blit(sur , sur_rect)
-                pygame.draw.line(surface , (255 , 255 , 255 , 150) , (self.x , self.y) , pts[dis.index(min(dis))])
-
+                if ray.id == self.startView//2:
+                    pygame.draw.line(surface , (255 , 0 , 0 , 150) , (self.x , self.y) , pts[dis.index(min(dis))])
+                else:
+                    pygame.draw.line(surface , (255 , 255 , 255 , 150) , (self.x , self.y) , pts[dis.index(min(dis))])
 class Ray:
     def __init__(self , x , y , ix , iy , id):
         self.x = x
@@ -217,7 +225,7 @@ boundary_lst.append(Boundary(WIDTH , mainHeight//2 - HEIGHT//2 , WIDTH , mainHei
 boundary_lst.append(Boundary(0 , mainHeight//2 + HEIGHT//2 , WIDTH , mainHeight//2 + HEIGHT//2))
 
 def draw():
-    pos = pygame.mouse.get_pos()
+    surface.blit(ground_sur , ground_sur_rect)
     for b in boundary_lst:
         b.draw()
     for block in block_lst:
@@ -231,6 +239,11 @@ surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
 pygame.display.set_caption("Ray Casting")
 clock = pygame.time.Clock()
 
+ground_sur = pygame.Surface( (700 , HEIGHT//2) )
+ground_sur_rect = ground_sur.get_rect(topleft = (WIDTH , mainHeight//2))
+ground_sur.fill("orange")
+
+
 while True:
     screen.fill("black")
     screen.blit(surface,(0,0))
@@ -243,9 +256,9 @@ while True:
             exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
-                PLAYER.goingUp = True
+                PLAYER.goingForward = True
             if event.key == pygame.K_s :
-                PLAYER.goingDown = True
+                PLAYER.goingBackward = True
             if event.key == pygame.K_d :
                 PLAYER.goingRight = True
             if event.key == pygame.K_a :
@@ -258,9 +271,9 @@ while True:
                           
         if event.type  == pygame.KEYUP:
             if event.key == pygame.K_w:
-                PLAYER.goingUp = False
+                PLAYER.goingForward = False
             if event.key == pygame.K_s:
-                PLAYER.goingDown = False
+                PLAYER.goingBackward = False
             if event.key == pygame.K_d:
                 PLAYER.goingRight = False
             if event.key == pygame.K_a:
@@ -273,7 +286,7 @@ while True:
                 
     if not particle_lst:
         particle_lst.append(1)
-        PLAYER = Particle(50 , 50)
+        PLAYER = Particle(50 , 250)
     draw()
     pygame.display.update()
     clock.tick(60)
