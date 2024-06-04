@@ -16,4 +16,4 @@ Hear is demo :
 
 Here is the 3D version .
 
-![Screenshot 2024-06-03 113606](https://github.com/AlirezaSaadatmand/Ray-Casting/assets/157215281/6367413e-5966-4b48-96b3-51d13a27f7b6)
+![Screenshot 2024-06-04 031450](https://github.com/AlirezaSaadatmand/Ray-Casting/assets/157215281/c6b059a5-a655-463c-ad69-bb0e09a8e3d5)
