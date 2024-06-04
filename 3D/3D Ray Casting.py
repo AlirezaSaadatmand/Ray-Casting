@@ -1,8 +1,7 @@
 import pygame
 from sys import exit
-import random
 import math
-import time
+
 
 mainWidth , mainHeight = 1200 , 700
 
@@ -17,6 +16,8 @@ boundary_lst = []
 particle_lst = []
 
 block_lst = []
+
+ground_lst = []
 
 MAP = [
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
@@ -137,7 +138,10 @@ class Particle:
                     dis.append(math.sqrt((self.y - pt[1])**2 + (self.x - pt[0])**2))
                     
                 unit = 700 // FIELD_OF_VIEW 
-                sur = pygame.Surface( (unit , HEIGHT / min(dis) * 20) )
+                if HEIGHT / min(dis) * 20 < HEIGHT:
+                    sur = pygame.Surface( (unit , HEIGHT / min(dis) * 20) )
+                else:
+                    sur = pygame.Surface( (unit , HEIGHT) )
                 if min(dis) < 240:
                     code = 255 - min(dis)
                 else:
@@ -225,7 +229,8 @@ boundary_lst.append(Boundary(WIDTH , mainHeight//2 - HEIGHT//2 , WIDTH , mainHei
 boundary_lst.append(Boundary(0 , mainHeight//2 + HEIGHT//2 , WIDTH , mainHeight//2 + HEIGHT//2))
 
 def draw():
-    surface.blit(ground_sur , ground_sur_rect)
+    for ground in ground_lst:
+        surface.blit(ground[0] , ground[1])
     for b in boundary_lst:
         b.draw()
     for block in block_lst:
@@ -239,9 +244,16 @@ surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
 pygame.display.set_caption("Ray Casting")
 clock = pygame.time.Clock()
 
-ground_sur = pygame.Surface( (700 , HEIGHT//2) )
-ground_sur_rect = ground_sur.get_rect(topleft = (WIDTH , mainHeight//2))
-ground_sur.fill("orange")
+for i in range(0 , 124):
+    unit = HEIGHT//2 // 100
+    ground_sur = pygame.Surface( (700 , unit) )
+    ground_sur_rect = ground_sur.get_rect(topleft = (WIDTH , mainHeight//2 + i * unit))
+    if i < 100:
+        ground_sur.fill((55 + i * 2 , 25 + i * 2, 0))
+    else:
+        ground_sur.fill((255 , 225 , 0))
+        
+    ground_lst.append([ground_sur , ground_sur_rect])
 
 
 while True:
