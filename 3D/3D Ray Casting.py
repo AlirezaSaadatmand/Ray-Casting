@@ -229,6 +229,7 @@ boundary_lst.append(Boundary(WIDTH , mainHeight//2 - HEIGHT//2 , WIDTH , mainHei
 boundary_lst.append(Boundary(0 , mainHeight//2 + HEIGHT//2 , WIDTH , mainHeight//2 + HEIGHT//2))
 
 def draw():
+    surface.blit(sky_sur , sky_sur_rect)
     for ground in ground_lst:
         surface.blit(ground[0] , ground[1])
     for b in boundary_lst:
@@ -254,6 +255,10 @@ for i in range(0 , 124):
         ground_sur.fill((255 , 225 , 0))
         
     ground_lst.append([ground_sur , ground_sur_rect])
+
+sky_sur = pygame.Surface( (700 , HEIGHT // 2) )
+sky_sur_rect = sky_sur.get_rect(bottomleft = (WIDTH , mainHeight //2))
+sky_sur.fill("lightblue")
 
 
 while True:
