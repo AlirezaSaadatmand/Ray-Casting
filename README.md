@@ -1,6 +1,6 @@
 This is a ray casting project using Python / pygame
 
-The character moves W A S D keys .
+The character moves using W A S D keys and the field of view changes using rightArrow and leftArrow.
 
 You can change the map the way you want using MAP list in the code .
 
