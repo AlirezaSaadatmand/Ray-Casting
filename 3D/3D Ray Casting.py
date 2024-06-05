@@ -21,13 +21,13 @@ ground_lst = []
 
 MAP = [
         [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0],
+        [0 , 0 , 0 , 1 , 1 , 1 , 1 , 0 , 0],
+        [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0],
         [0 , 0 , 0 , 0 , 1 , 0 , 1 , 0 , 0],
         [0 , 0 , 1 , 0 , 1 , 0 , 1 , 0 , 0],
-        [0 , 0 , 1 , 0 , 0 , 0 , 1 , 0 , 0],
+        [0 , 1 , 1 , 0 , 0 , 0 , 1 , 0 , 0],
         [0 , 0 , 1 , 0 , 1 , 1 , 1 , 0 , 0],
-        [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
+        [0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0],
                                             ]
 
 X_UNIT = WIDTH / (len(MAP[0]))
@@ -89,7 +89,7 @@ class Particle:
             self.main_ray_lst.append(self.ray_lst[count2])
             c += 1
 
-# ======================================= Movement ==================================
+        # ======================================= Movement ==================================
         
         count = 0
         for i in [self.goingForward , self.goingBackward , self.goingRight , self.goingLeft]:
@@ -199,7 +199,7 @@ class Boundary:
 
 def block(xindex , yindex):
     x = X_UNIT * xindex
-    y = Y_UNIT * yindex
+    y = Y_UNIT * yindex + (mainHeight//2) - (HEIGHT //2)
     
     sur = pygame.Surface( (X_UNIT , Y_UNIT) )
     sur.fill("white")
@@ -229,6 +229,7 @@ boundary_lst.append(Boundary(WIDTH , mainHeight//2 - HEIGHT//2 , WIDTH , mainHei
 boundary_lst.append(Boundary(0 , mainHeight//2 + HEIGHT//2 , WIDTH , mainHeight//2 + HEIGHT//2))
 
 def draw():
+    surface.blit(left_ground , left_ground_rect)
     surface.blit(sky_sur , sky_sur_rect)
     for ground in ground_lst:
         surface.blit(ground[0] , ground[1])
@@ -242,8 +243,11 @@ def draw():
 pygame.init()
 screen = pygame.display.set_mode( (mainWidth , mainHeight)) 
 surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
-pygame.display.set_caption("Ray Casting")
 clock = pygame.time.Clock()
+
+left_ground = pygame.Surface( (WIDTH , HEIGHT) )
+left_ground_rect = left_ground.get_rect(topleft = (0 , mainHeight//2 - HEIGHT//2))
+left_ground.fill((255 , 225 , 0))
 
 for i in range(0 , 124):
     unit = HEIGHT//2 // 100
@@ -262,6 +266,8 @@ sky_sur.fill("lightblue")
 
 
 while True:
+    pygame.display.set_caption(f" FPS : {round(clock.get_fps())} Ray Casting")
+    
     screen.fill("black")
     screen.blit(surface,(0,0))
     surface.fill("black")
