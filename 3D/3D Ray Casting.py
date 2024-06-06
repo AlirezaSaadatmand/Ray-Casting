@@ -7,7 +7,7 @@ mainWidth , mainHeight = 1200 , 700
 
 WIDTH , HEIGHT = 500 , 500
 
-PIXEL_UNIT = 1
+PIXEL_UNIT = 1.5
 
 FIELD_OF_VIEW = 140
 
